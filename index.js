@@ -1,5 +1,17 @@
 
 require('dotenv').config();
+const express = require('express');
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  res.send('Bot activo');
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor escuchando en puerto ${PORT}`);
+});
 
 // Ejecutar deploy-commands.js automáticamente al iniciar index.js
 const { exec } = require('child_process');
