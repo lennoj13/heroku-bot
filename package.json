@@ -1,0 +1,16 @@
+{
+  "name": "bot-jonnel",
+  "version": "1.0.0",
+  "description": "Bot de Discord con funcionalidades de música",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "node deploy-commands.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "kazagumo": "^3.3.0",
+    "shoukaku": "^4.1.1"
+  }
+}
