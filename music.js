@@ -43,8 +43,21 @@ module.exports = (client) => {
         if (!player.queue || player.queue.length === 0) {
             if (player.disconnectTimeout) clearTimeout(player.disconnectTimeout);
             player.disconnectTimeout = setTimeout(() => {
-                if (!player.playing && (!player.queue || player.queue.length === 0)) {
-                    player.destroy();
+                // Solo destruir si el player sigue activo y no está tocando ni tiene cola
+                if (
+                    player &&
+                    !player.playing &&
+                    (!player.queue || player.queue.length === 0)
+                ) {
+                    if (player.destroyed) {
+                        console.warn('Intento de destruir un player que ya estaba destruido (timeout global)');
+                        return;
+                    }
+                    try {
+                        player.destroy();
+                    } catch (e) {
+                        console.error('Error al destruir el player en timeout global:', e.message);
+                    }
                 }
             }, 180000); // 3 minutos
         }
