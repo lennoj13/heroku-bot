@@ -1,4 +1,4 @@
-// ❌ NO NECESARIO EN RAILWAY
+// ❌ NO NECESARIO EN HEROKU (solo para desarrollo local)
 require('dotenv').config();
 const express = require('express');
 const app = express();
@@ -18,7 +18,7 @@ const fs = require('fs');
 
 // Verificar que se haya recibido el token
 if (!process.env.TOKEN) {
-  console.error("❌ No se encontró el token. Verifica las variables de entorno en Railway.");
+  console.error("❌ No se encontró el token. Verifica las variables de entorno en Heroku.");
   process.exit(1);
 }
 
