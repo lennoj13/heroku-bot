@@ -3,38 +3,43 @@ const { Kazagumo, Plugins } = require('kazagumo');
 const { Connectors } = require('shoukaku');
 
 
-const nodes = [
+// Configurar nodos según variables de entorno
+const nodes = [];
+
+// Usar configuración de Lavalink desde variables de entorno si están disponibles
+if (process.env.LAVALINK_HOST && process.env.LAVALINK_PASSWORD) {
+    nodes.push({
+        name: 'MainLavalink',
+        url: `${process.env.LAVALINK_HOST}:${process.env.LAVALINK_PORT || 2333}`,
+        auth: process.env.LAVALINK_PASSWORD,
+        secure: process.env.LAVALINK_SECURE === 'true',
+    });
+    console.log(`🎵 Conectando a Lavalink: ${process.env.LAVALINK_HOST}:${process.env.LAVALINK_PORT || 2333}`);
+} else {
+    console.log('⚠️ Variables de Lavalink no encontradas, usando servidores de respaldo');
+}
+
+// Servidores de respaldo
+nodes.push(
     {
-        name: 'RY4N',
+        name: 'RY4N-Backup',
         url: 'mine.visionhost.cloud:2002',
         auth: 'youshallnotpass',
         secure: false,
     },
     {
-        name: 'Serenetia-LDP-NonSSL',
+        name: 'Serenetia-Backup',
         url: 'lavalink.serenetia.com:80',
         auth: 'https://dsc.gg/ajidevserver',
         secure: false,
     },
     {
-        name: 'Lavalink1',
+        name: 'Lavalink1-Backup',
         url: 'lava-v3.ajieblogs.eu.org:443',
         auth: 'https://dsc.gg/ajidevserver',
         secure: true,
-    },
-    {
-        name: 'Lavalink2', 
-        url: 'lavalink.oops.wtf:443',
-        auth: 'www.freelavalink.ga',
-        secure: true,
-    },
-    {
-        name: 'Lavalink3',
-        url: 'lavalink-repl.techbyte.host:443',
-        auth: 'techbyte',
-        secure: true,
     }
-];
+);
 
 
 module.exports = (client) => {
