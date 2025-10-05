@@ -26,7 +26,20 @@ module.exports = {
         }
 
         const voiceChannel = member.voice.channel;
-        if (!voiceChannel) return interaction.reply('No se ha encontrado un canal de voz');
+        if (!voiceChannel) {
+            return interaction.reply({ 
+                content: '❌ Debes estar en un canal de voz para usar este comando.', 
+                ephemeral: true 
+            });
+        }
+
+        // Verificar permisos del bot en el canal de voz
+        if (!voiceChannel.permissionsFor(guild.members.me).has(['Connect', 'Speak'])) {
+            return interaction.reply({
+                content: '❌ No tengo permisos para conectarme o hablar en tu canal de voz.',
+                ephemeral: true
+            });
+        }
 
         await interaction.deferReply();
 
@@ -52,17 +65,41 @@ module.exports = {
                 }
             }, 1000); // 1 segundo de retraso
 
+            // Verificar que Lavalink esté conectado
+            if (!kazagumo || !kazagumo.shoukaku || kazagumo.shoukaku.nodes.size === 0) {
+                try { 
+                    await interaction.editReply('❌ El servicio de música no está disponible. Inténtalo más tarde.'); 
+                } catch (e) {}
+                return;
+            }
+
             let result;
-            // Buscar en YouTube usando la query original (sin prefijo)
+            // Buscar música con diferentes fuentes como respaldo
             try {
-                result = await kazagumo.search(query, { requester: user });
+                // Primero intentar YouTube
+                result = await kazagumo.search(query, { requester: user, engine: 'youtube' });
+                
+                // Si no encuentra en YouTube, intentar con YouTube Music
+                if (!result || !result.tracks || result.tracks.length === 0) {
+                    result = await kazagumo.search(query, { requester: user, engine: 'ytmsearch' });
+                }
+                
+                // Si aún no encuentra, intentar búsqueda general
+                if (!result || !result.tracks || result.tracks.length === 0) {
+                    result = await kazagumo.search(query, { requester: user });
+                }
             } catch (searchError) {
-                console.error('Error buscando la canción en YouTube:', searchError);
-                result = null;
+                console.error('Error buscando la canción:', searchError);
+                try { 
+                    await interaction.editReply('❌ Error al buscar la canción. Verifica tu conexión e inténtalo de nuevo.'); 
+                } catch (e) {}
+                return;
             }
 
             if (!result || !result.tracks || !result.tracks.length) {
-                try { await interaction.editReply('No se han encontrado resultados en YouTube.'); } catch (e) {}
+                try { 
+                    await interaction.editReply(`❌ No se encontraron resultados para: **${query}**\n💡 Intenta con un nombre más específico.`); 
+                } catch (e) {}
                 return;
             }
 
