@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 
 const servers = [
+    'mine.visionhost.cloud:2002',
     'lavalink.serenetia.com:80',
     'lava-v3.ajieblogs.eu.org:443',
     'lavalink.oops.wtf:443', 

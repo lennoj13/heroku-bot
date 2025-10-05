@@ -5,6 +5,12 @@ const { Connectors } = require('shoukaku');
 
 const nodes = [
     {
+        name: 'RY4N',
+        url: 'mine.visionhost.cloud:2002',
+        auth: 'youshallnotpass',
+        secure: false,
+    },
+    {
         name: 'Serenetia-LDP-NonSSL',
         url: 'lavalink.serenetia.com:80',
         auth: 'https://dsc.gg/ajidevserver',
